@@ -1,39 +1,54 @@
 package priority_queue
 
 type PriorityQueue interface{
-	Push(int)
-	Pop() int
-	Peek() int
+	Push(Item)
+	Pop() Item
+	Peek() Item
 	Remove(int)
+	Length() int
 }
 
 type priorityQueue struct {
-	binaryHeap []int
+	binaryHeap []*item
 }
 
-func (p *priorityQueue) Push(element int){
-	p.binaryHeap = append(p.binaryHeap, element)
-	p.shiftUpNode(len(p.binaryHeap)-1)
+func NewPriorityQueue() PriorityQueue{
+	return &priorityQueue{}
 }
 
-func (p *priorityQueue) Pop() int{
+func (p *priorityQueue) Length() int{
+	return len(p.binaryHeap)
+}
+
+func (p *priorityQueue) Push(i Item){
+	item := item{
+		value: i.GetValue(),
+		priority: i.GetPriority(),
+	}
+	p.binaryHeap = append(p.binaryHeap, &item)
+	p.shiftUpNode(p.Length()-1)
+}
+
+func (p *priorityQueue) Pop() Item{
 	result := p.binaryHeap[0]
 	// replace root node with last node
-	p.binaryHeap[0] = p.binaryHeap[len(p.binaryHeap)-1]
+	p.binaryHeap[0] = p.binaryHeap[p.Length()-1]
+	// Avoid memory leaks
+	p.binaryHeap[p.Length()-1] = nil
 	// trim off the last leaf
-	p.binaryHeap = p.binaryHeap[:len(p.binaryHeap)-1]
+	p.binaryHeap = p.binaryHeap[:p.Length()-1]
 	// rebalance
 	p.shiftDownNode(0)
 
 	return result
 }
 
-func (p *priorityQueue) Peek() int {
+func (p *priorityQueue) Peek() Item {
 	return p.binaryHeap[0]
 }
 
 func (p *priorityQueue) Remove(i int){
-	p.binaryHeap[i] = p.Peek() + 1
+	p.binaryHeap[i].SetPriority(p.Peek().GetPriority() + 1)
 	p.shiftUpNode(i)
 	p.Pop()
 }
@@ -55,7 +70,8 @@ func (p *priorityQueue) swapNodes(i, j int) {
 }
 
 func (p *priorityQueue) shiftUpNode(i int){
-	for i > 0 && p.binaryHeap[getParentIndex(i)] < p.binaryHeap[i]{
+	// Check that index is not 0 and the that parent is lower priority
+	for i > 0 && p.binaryHeap[getParentIndex(i)].GetPriority() < p.binaryHeap[i].GetPriority(){
 		// swap parent and node
 		p.swapNodes(getParentIndex(i), i)
 		i = getParentIndex(i)
@@ -66,12 +82,12 @@ func (p *priorityQueue) shiftDownNode(i int){
 	maxIndex := i
 	leftChildIndex := getLeftChildIndex(i)
 
-	if leftChildIndex <= len(p.binaryHeap) && p.binaryHeap[leftChildIndex] > p.binaryHeap[maxIndex]{
+	if leftChildIndex <= p.Length() && p.binaryHeap[leftChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
 		maxIndex = leftChildIndex
 	}
 
 	rightChildIndex := getRightChildIndex(i)
-	if rightChildIndex <= len(p.binaryHeap) && p.binaryHeap[rightChildIndex] > p.binaryHeap[maxIndex]{
+	if rightChildIndex <= p.Length() && p.binaryHeap[rightChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
 		maxIndex = rightChildIndex
 	}
 
