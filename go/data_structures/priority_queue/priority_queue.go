@@ -53,16 +53,16 @@ func (p *priorityQueue) Remove(i int){
 	p.Pop()
 }
 
-func getParentIndex(i int) int {
-	return (i - 1) / 2
+func getParentIndex(index int) int {
+	return (index - 1) / 2
 }
 
-func getLeftChildIndex(i int) int {
-	return (2 * i) + 1
+func getLeftChildIndex(index int) int {
+	return (2 * index) + 1
 }
 
-func getRightChildIndex(i int) int {
-	return (2 * i) + 2
+func getRightChildIndex(index int) int {
+	return (2 * index) + 2
 }
 
 func (p *priorityQueue) swapNodes(i, j int) {
@@ -82,12 +82,12 @@ func (p *priorityQueue) shiftDownNode(i int){
 	maxIndex := i
 	leftChildIndex := getLeftChildIndex(i)
 
-	if leftChildIndex <= p.Length() && p.binaryHeap[leftChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
+	if leftChildIndex < p.Length() && p.binaryHeap[leftChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
 		maxIndex = leftChildIndex
 	}
 
 	rightChildIndex := getRightChildIndex(i)
-	if rightChildIndex <= p.Length() && p.binaryHeap[rightChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
+	if rightChildIndex < p.Length() && p.binaryHeap[rightChildIndex].GetPriority() > p.binaryHeap[maxIndex].GetPriority(){
 		maxIndex = rightChildIndex
 	}
 

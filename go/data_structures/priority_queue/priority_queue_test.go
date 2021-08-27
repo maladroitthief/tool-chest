@@ -25,19 +25,40 @@ func TestNewPriorityQueue(t *testing.T) {
 
 func Test_priorityQueue_Length(t *testing.T) {
 	type fields struct {
-		binaryHeap []*item
+		binaryHeap []pq.Item
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		want   int
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Normal conditions",
+			fields: fields{
+				binaryHeap: []pq.Item{
+					pq.NewItem(nil, 1),
+					pq.NewItem(nil, 4),
+					pq.NewItem(nil, 7),
+					pq.NewItem(nil, 9),
+					pq.NewItem(nil, 2),
+				},
+			},
+			want: 5,
+		},
+		{
+			name: "Empty queue",
+			fields: fields{
+				binaryHeap: []pq.Item{
+				},
+			},
+			want: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &priorityQueue{
-				binaryHeap: tt.fields.binaryHeap,
+			p := pq.NewPriorityQueue()
+			for _, item := range tt.fields.binaryHeap{
+				p.Push(item)
 			}
 			if got := p.Length(); got != tt.want {
 				t.Errorf("priorityQueue.Length() = %v, want %v", got, tt.want)
@@ -47,44 +68,61 @@ func Test_priorityQueue_Length(t *testing.T) {
 }
 
 func Test_priorityQueue_Push(t *testing.T) {
-	type fields struct {
-		binaryHeap []*item
-	}
 	type args struct {
-		i Item
+		i pq.Item
 	}
 	tests := []struct {
 		name   string
-		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Normal conditions",
+			args: args{
+				pq.NewItem(nil, 1),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &priorityQueue{
-				binaryHeap: tt.fields.binaryHeap,
-			}
+			p := pq.NewPriorityQueue()
+			lengthBefore := p.Length()
 			p.Push(tt.args.i)
+			lengthAfter := p.Length()
+			if lengthAfter != lengthBefore + 1{
+				t.Errorf("priorityQueue.Push() did not insert %v", tt.args.i)
+			}
 		})
 	}
 }
 
 func Test_priorityQueue_Pop(t *testing.T) {
 	type fields struct {
-		binaryHeap []*item
+		binaryHeap []pq.Item
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   Item
+		want   pq.Item
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Normal conditions",
+			fields: fields{
+				binaryHeap: []pq.Item{
+					pq.NewItem(nil, 1),
+					pq.NewItem(nil, 4),
+					pq.NewItem(nil, 7),
+					pq.NewItem(nil, 9),
+					pq.NewItem(nil, 2),
+				},
+			},
+			want: pq.NewItem(nil, 9),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &priorityQueue{
-				binaryHeap: tt.fields.binaryHeap,
+			p := pq.NewPriorityQueue()
+			for _, item := range tt.fields.binaryHeap{
+				p.Push(item)
 			}
 			if got := p.Pop(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("priorityQueue.Pop() = %v, want %v", got, tt.want)
@@ -95,22 +133,40 @@ func Test_priorityQueue_Pop(t *testing.T) {
 
 func Test_priorityQueue_Peek(t *testing.T) {
 	type fields struct {
-		binaryHeap []*item
+		binaryHeap []pq.Item
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   Item
+		want   pq.Item
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Normal conditions",
+			fields: fields{
+				binaryHeap: []pq.Item{
+					pq.NewItem(nil, 1),
+					pq.NewItem(nil, 4),
+					pq.NewItem(nil, 7),
+					pq.NewItem(nil, 9),
+					pq.NewItem(nil, 2),
+				},
+			},
+			want: pq.NewItem(nil, 9),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &priorityQueue{
-				binaryHeap: tt.fields.binaryHeap,
+			p := pq.NewPriorityQueue()
+			for _, item := range tt.fields.binaryHeap{
+				p.Push(item)
 			}
+			originalLength := p.Length()
 			if got := p.Peek(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("priorityQueue.Peek() = %v, want %v", got, tt.want)
+			}
+			currentLength := p.Length()
+			if originalLength != currentLength{
+				t.Errorf("priorityQueue.Peek() length was altered, was %v, is now %v", originalLength, currentLength)
 			}
 		})
 	}
@@ -118,7 +174,7 @@ func Test_priorityQueue_Peek(t *testing.T) {
 
 func Test_priorityQueue_Remove(t *testing.T) {
 	type fields struct {
-		binaryHeap []*item
+		binaryHeap []pq.Item
 	}
 	type args struct {
 		i int
@@ -128,14 +184,37 @@ func Test_priorityQueue_Remove(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Normal conditions",
+			fields: fields{
+				binaryHeap: []pq.Item{
+					pq.NewItem(nil, 1),
+					pq.NewItem(nil, 4),
+					pq.NewItem(nil, 7),
+					pq.NewItem(nil, 9),
+					pq.NewItem(nil, 2),
+				},
+			},
+			args: args{
+				i: 0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &priorityQueue{
-				binaryHeap: tt.fields.binaryHeap,
+			p := pq.NewPriorityQueue()
+			for _, item := range tt.fields.binaryHeap{
+				p.Push(item)
 			}
+			originalLength := p.Length()
 			p.Remove(tt.args.i)
+			if originalLength == 0 {
+				return
+			}
+			currentLength := p.Length()
+			if originalLength - 1 != currentLength{
+				t.Errorf("priorityQueue.Remove() length incorrect, was %v, is now %v", originalLength, currentLength)
+			}
 		})
 	}
 }
