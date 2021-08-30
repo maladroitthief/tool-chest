@@ -21,3 +21,25 @@ func (st *suffixTree) newNode(start int, end *int) *suffixTreeNode {
 func (stn *suffixTreeNode) edgeLength() int {
 	return *stn.end - stn.start + 1
 }
+
+func (stn *suffixTreeNode) childAtIndex(i int) bool {
+	if len(stn.children) <= i {
+		return false
+	}
+
+	if stn.children[i] == nil {
+		return false
+	}
+
+	return true
+}
+
+func (stn *suffixTreeNode) insertChildAtIndex(i int, s *suffixTreeNode) {
+	if len(stn.children) <= i {
+		extendLength := i - len(stn.children)
+		extendSlice := make([]*suffixTreeNode, extendLength)
+		stn.children = append(stn.children, extendSlice...)
+	}
+
+	stn.children[i] = s
+}

@@ -38,7 +38,7 @@ func NewSuffixTree(s string) SuffixTree {
 
 func (st *suffixTree) walkDown(currentNode *suffixTreeNode) bool {
 	if st.activeLength >= currentNode.edgeLength() {
-		st.activeEdge = st.activeEdge - currentNode.edgeLength()
+		st.activeEdge += currentNode.edgeLength()
 		st.activeLength -= currentNode.edgeLength()
 		st.activeNode = currentNode
 		return true
@@ -53,7 +53,52 @@ func (st *suffixTree) extend(position int) {
 	st.lastNewNode = nil
 
 	for st.remainingSuffixCount > 0 {
+		if st.activeLength == 0 {
+			st.activeEdge = position
+		}
 
+		if st.activeNode.childAtIndex(st.activeEdge) {
+			next := st.activeNode.children[st.activeEdge]
+			if st.walkDown(next) {
+				continue
+			}
+
+			if st.inputString[next.start+st.activeLength] == st.inputString[position] {
+				if st.lastNewNode != nil && st.activeNode != st.root {
+					st.lastNewNode.suffixLink = st.activeNode
+					st.lastNewNode = nil
+				}
+
+				st.activeLength++
+
+				break
+			}
+
+			splitEnd := next.start + st.activeLength - 1
+			split := st.newNode(next.start, &splitEnd)
+			st.activeNode.insertChildAtIndex(st.activeEdge, split)
+
+			if st.lastNewNode != nil {
+				st.lastNewNode.suffixLink = split
+			}
+
+			st.lastNewNode = split
+		} else {
+			stn := st.newNode(position, &leafEnd)
+			st.activeNode.insertChildAtIndex(st.activeEdge, stn)
+
+			if st.lastNewNode != nil {
+				st.lastNewNode.suffixLink = st.activeNode
+				st.lastNewNode = nil
+			}
+		}
+
+		st.remainingSuffixCount--
+		if st.activeNode == st.root && st.activeLength > 0 {
+			st.activeLength--
+			st.activeEdge = position - st.remainingSuffixCount + 1
+		} else if st.activeNode != st.root {
+			st.activeNode = st.activeNode.suffixLink
+		}
 	}
-
 }
