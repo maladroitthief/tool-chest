@@ -2,6 +2,7 @@ package priority_queue
 
 import "errors"
 
+// PriorityQueue describes all the the functions that a priorityQueue object must implement
 type PriorityQueue interface {
 	Push(Item)
 	Pop() (Item, error)
@@ -19,14 +20,18 @@ var (
 	ErrIndexOutOfBounds   = errors.New("index is out of bounds of the queue")
 )
 
+// NewPriorityQueue returns an instance of a priorityQueue struct
 func NewPriorityQueue() PriorityQueue {
 	return &priorityQueue{}
 }
 
+// Length returns the current length of the priorityQueue
 func (p *priorityQueue) Length() int {
 	return len(p.binaryHeap)
 }
 
+// Push inserts an Item into the priorityQueue and shifts it into position based
+// on the Item's priority
 func (p *priorityQueue) Push(i Item) {
 	item := item{
 		value:    i.GetValue(),
@@ -35,6 +40,9 @@ func (p *priorityQueue) Push(i Item) {
 	p.binaryHeap = append(p.binaryHeap, &item)
 	p.shiftUpNode(p.Length() - 1)
 }
+
+// Pop returns the Item with the highest priority and removes it from the
+// priorityQueue. An error is returned for any illegal operations
 
 func (p *priorityQueue) Pop() (Item, error) {
 	if p.Length() == 0 {
@@ -54,6 +62,7 @@ func (p *priorityQueue) Pop() (Item, error) {
 	return result, nil
 }
 
+// Peek returns the highest priority Item without removing it from the queue
 func (p *priorityQueue) Peek() (Item, error) {
 	if p.Length() == 0 {
 		return nil, ErrPriorityQueueEmpty
@@ -62,6 +71,7 @@ func (p *priorityQueue) Peek() (Item, error) {
 	return p.binaryHeap[0], nil
 }
 
+// Remove removes the Item located at index i from the priorityQueue
 func (p *priorityQueue) Remove(i int) error {
 	if i < 0 || i >= p.Length() {
 		return ErrIndexOutOfBounds
@@ -74,9 +84,9 @@ func (p *priorityQueue) Remove(i int) error {
 
 	p.binaryHeap[i].SetPriority(currentRoot.GetPriority() + 1)
 	p.shiftUpNode(i)
-	p.Pop()
+	_, err = p.Pop()
 
-	return nil
+	return err
 }
 
 func getParentIndex(index int) int {
