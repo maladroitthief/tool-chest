@@ -34,6 +34,7 @@ func NewSuffixTree(s string) SuffixTree {
 		splitEnd:             nil,
 	}
 
+	st.rootEnd = new(int)
 	*st.rootEnd = -1
 	st.root = st.newNode(-1, st.rootEnd)
 	st.activeNode = st.root
@@ -122,7 +123,7 @@ func (st *suffixTree) setSuffixIndexByDFS(stn *suffixTreeNode, labelHeight int) 
 
 	if stn.start != -1 {
 		for i := stn.start; i <= *stn.end; i++ {
-			log.Printf("%v", st.inputString[i])
+			log.Printf("%s", string(st.inputString[i]))
 		}
 	}
 

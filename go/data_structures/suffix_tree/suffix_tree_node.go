@@ -35,10 +35,8 @@ func (stn *suffixTreeNode) childAtIndex(i int) bool {
 }
 
 func (stn *suffixTreeNode) insertChildAtIndex(i int, s *suffixTreeNode) {
-	if len(stn.children) <= i {
-		extendLength := i - len(stn.children)
-		extendSlice := make([]*suffixTreeNode, extendLength)
-		stn.children = append(stn.children, extendSlice...)
+	for i >= len(stn.children) {
+		stn.children = append(stn.children, &suffixTreeNode{})
 	}
 
 	stn.children[i] = s
