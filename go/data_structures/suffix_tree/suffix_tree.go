@@ -1,5 +1,7 @@
 package suffix_tree
 
+import "log"
+
 type SuffixTree interface {
 }
 
@@ -15,7 +17,6 @@ type suffixTree struct {
 	leafEnd              int
 	rootEnd              *int
 	splitEnd             *int
-	inputStringSize      int
 }
 
 func NewSuffixTree(s string) SuffixTree {
@@ -31,8 +32,19 @@ func NewSuffixTree(s string) SuffixTree {
 		leafEnd:              -1,
 		rootEnd:              nil,
 		splitEnd:             nil,
-		inputStringSize:      -1,
 	}
+
+	*st.rootEnd = -1
+	st.root = st.newNode(-1, st.rootEnd)
+	st.activeNode = st.root
+	for i := range s {
+		st.extend(i)
+	}
+
+	labelHeight := 0
+	st.setSuffixIndexByDFS(st.root, labelHeight)
+	st.freeByPostOrder(st.root)
+
 	return &st
 }
 
@@ -101,4 +113,54 @@ func (st *suffixTree) extend(position int) {
 			st.activeNode = st.activeNode.suffixLink
 		}
 	}
+}
+
+func (st *suffixTree) setSuffixIndexByDFS(stn *suffixTreeNode, labelHeight int) {
+	if stn == nil {
+		return
+	}
+
+	if stn.start != -1 {
+		for i := stn.start; i <= *stn.end; i++ {
+			log.Printf("%v", st.inputString[i])
+		}
+	}
+
+	isLeaf := true
+	for _, child := range stn.children {
+		if child != nil {
+			if isLeaf && stn.start != -1 {
+				log.Printf(" [%v]\n", stn.suffixIndex)
+			}
+			isLeaf = false
+			st.setSuffixIndexByDFS(child, labelHeight+child.edgeLength())
+		}
+	}
+
+	if isLeaf {
+		stn.suffixIndex = st.size() - labelHeight
+		log.Printf(" [%v]\n", stn.suffixIndex)
+	}
+}
+
+func (st *suffixTree) freeByPostOrder(stn *suffixTreeNode) {
+	if stn == nil {
+		return
+	}
+
+	for _, child := range stn.children {
+		if child != nil {
+			st.freeByPostOrder(child)
+		}
+	}
+
+	if stn.suffixIndex == -1 {
+		stn.end = nil
+	}
+
+	stn = nil
+}
+
+func (st *suffixTree) size() int {
+	return len(st.inputString)
 }
