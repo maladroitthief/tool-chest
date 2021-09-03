@@ -70,7 +70,15 @@ func (st *suffixTree) extend(position int) {
 			st.activeEdge = position
 		}
 
-		if st.activeNode.childAtIndex(st.activeEdge) {
+		if st.activeNode.children[st.activeEdge] == nil {
+			stn := st.newNode(position, &leafEnd)
+			st.activeNode.children[st.activeEdge] = stn
+
+			if st.lastNewNode != nil {
+				st.lastNewNode.suffixLink = st.activeNode
+				st.lastNewNode = nil
+			}
+		} else {
 			next := st.activeNode.children[st.activeEdge]
 			if st.walkDown(next) {
 				continue
@@ -89,21 +97,13 @@ func (st *suffixTree) extend(position int) {
 
 			splitEnd := next.start + st.activeLength - 1
 			split := st.newNode(next.start, &splitEnd)
-			st.activeNode.insertChildAtIndex(st.activeEdge, split)
+			st.activeNode.children[st.activeEdge] = split
 
 			if st.lastNewNode != nil {
 				st.lastNewNode.suffixLink = split
 			}
 
 			st.lastNewNode = split
-		} else {
-			stn := st.newNode(position, &leafEnd)
-			st.activeNode.insertChildAtIndex(st.activeEdge, stn)
-
-			if st.lastNewNode != nil {
-				st.lastNewNode.suffixLink = st.activeNode
-				st.lastNewNode = nil
-			}
 		}
 
 		st.remainingSuffixCount--
