@@ -37,5 +37,5 @@ func (stn *suffixTreeNode) edgeLength() int {
 		return 0
 	}
 
-	return *stn.end - stn.start + 1
+	return *(stn.end) - stn.start + 1
 }

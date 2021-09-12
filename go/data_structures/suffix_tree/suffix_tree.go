@@ -40,7 +40,6 @@ func NewSuffixTree(s string) SuffixTree {
 	}
 
 	st.rootEnd = new(int)
-	st.splitEnd = new(int)
 	*st.rootEnd = -1
 	st.root = st.newNode(-1, st.rootEnd)
 	st.root.setRoot()
@@ -118,6 +117,7 @@ func (st *suffixTree) extend(position int) {
 			}
 
 			// We will be here when activePoint is in middle of the edge being traversed and current character being processed is not on the edge (we fall off the tree). In this case, we add a new internal node and a new leaf edge going out of that new node. This is Extension Rule 2, where a new leaf edge and a new internal node get created
+			st.splitEnd = new(int)
 			*st.splitEnd = next.start + st.activeLength - 1
 
 			// new internal node
