@@ -17,13 +17,7 @@ func TestNewSuffixTree(t *testing.T) {
 		{
 			name: "Basic Suffix Tree Test",
 			args: args{
-				s: "glass",
-			},
-		},
-		{
-			name: "Complex word test",
-			args: args{
-				s: "mississippi",
+				s: "abbc",
 			},
 		},
 	}
