@@ -1,15 +1,22 @@
 package suffix_tree
 
 import (
+	"errors"
 	"log"
 )
 
+var (
+	ErrNoRepeatedSubstrings = errors.New("no repeated substrings")
+)
+
 type SuffixTree interface {
+	LongestRepeatedSubstring() (string, error)
 }
 
 type suffixTree struct {
-	inputString string
-	root        *suffixTreeNode
+	inputString         string
+	terminatorCharacter string
+	root                *suffixTreeNode
 	// lastNewNode will point to newly created internal node, waiting for it's suffix link to be set, which might get a new suffix link (other than root) in next extension of same phase. lastNewNode will be set to nil when last newly created internal node (if there is any) got it's suffix link reset to new internal node created in next extension of same phase.
 	lastNewNode *suffixTreeNode
 	activeNode  *suffixTreeNode
@@ -27,6 +34,7 @@ type suffixTree struct {
 func NewSuffixTree(s string) SuffixTree {
 	st := suffixTree{
 		inputString:          s,
+		terminatorCharacter:  "\u0000",
 		root:                 nil,
 		lastNewNode:          nil,
 		activeNode:           nil,
@@ -39,20 +47,47 @@ func NewSuffixTree(s string) SuffixTree {
 		splitEnd:             nil,
 	}
 
+	st.inputString += st.terminatorCharacter
 	st.rootEnd = new(int)
 	*st.rootEnd = -1
 	st.root = st.newNode(-1, st.rootEnd)
 	st.root.setRoot()
 	st.activeNode = st.root
-	for i := range s {
+	for i := range st.inputString {
 		st.extend(i)
 	}
 
 	labelHeight := 0
 	st.setSuffixIndexByDFS(st.root, labelHeight)
-	st.freeByPostOrder(st.root)
+	// st.freeByPostOrder(st.root)
 
 	return &st
+}
+
+func (st *suffixTree) RootTraversal(labelHeight int, maxHeight, substringStartIndex *int) {
+	st.root.traversal(labelHeight, maxHeight, substringStartIndex)
+}
+
+func (st *suffixTree) LongestRepeatedSubstring() (string, error) {
+	maxHeight := 0
+	substringStartIndex := 0
+
+	st.RootTraversal(0, &maxHeight, &substringStartIndex)
+
+	// if maxHeight > 0 {
+	// 	return st.inputString[substringStartIndex:maxHeight], nil
+	// }
+
+	results := ""
+	for k := 0; k < maxHeight; k++ {
+		results += string(st.inputString[k+substringStartIndex])
+	}
+
+	if results == "" {
+		return "", ErrNoRepeatedSubstrings
+	}
+
+	return results, nil
 }
 
 func (st *suffixTree) walkDown(currentNode *suffixTreeNode) bool {

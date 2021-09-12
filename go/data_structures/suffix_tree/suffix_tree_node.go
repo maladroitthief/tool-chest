@@ -39,3 +39,19 @@ func (stn *suffixTreeNode) edgeLength() int {
 
 	return *(stn.end) - stn.start + 1
 }
+
+func (stn *suffixTreeNode) traversal(labelHeight int, maxHeight, substringStartIndex *int) {
+	if stn == nil {
+		return
+	}
+	if stn.suffixIndex == -1 {
+		for _, n := range stn.children {
+			if n != nil {
+				n.traversal(labelHeight+n.edgeLength(), maxHeight, substringStartIndex)
+			}
+		}
+	} else if stn.suffixIndex > -1 && (*maxHeight < labelHeight-stn.edgeLength()) {
+		*maxHeight = labelHeight - stn.edgeLength()
+		*substringStartIndex = stn.suffixIndex
+	}
+}

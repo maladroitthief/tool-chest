@@ -27,3 +27,45 @@ func TestNewSuffixTree(t *testing.T) {
 		})
 	}
 }
+
+func Test_suffixTree_LongestRepeatedSubstring(t *testing.T) {
+	type fields struct {
+		inputString string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "Basic substring search test",
+			fields: fields{
+				inputString: "banana",
+			},
+			want:    "ana",
+			wantErr: false,
+		},
+		{
+			name: "No duplicate substring search test",
+			fields: fields{
+				inputString: "abc",
+			},
+			want:    "",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := st.NewSuffixTree(tt.fields.inputString)
+			got, err := s.LongestRepeatedSubstring()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("suffixTree.LongestRepeatedSubstring() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("suffixTree.LongestRepeatedSubstring() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
