@@ -1,0 +1,28 @@
+{
+  "Runbook": {
+    "scope": "markdown",
+    "description": "Template for creating a detailed 'how-to' guide for completing a commonly repeated task or procedure within an operations process.",
+    "prefix": ["runbook", "template"],
+    "body": [
+      "---",
+      "title: $1",
+      "owner: $2",
+      "created-at: $3",
+      "time-to-implement: $4",
+      "---",
+      "",
+      "# $1",
+      "",
+      "> Applies to ",
+      "",
+      "You can use this procedure to ",
+      "",
+      "## Prerequisites",
+      "",
+      "## Procedure",
+      "",
+      "## Procedure Validation",
+      ""
+    ]
+  }
+}
