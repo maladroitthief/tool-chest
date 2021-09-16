@@ -1,0 +1,48 @@
+{
+  "Note alert": {
+    "scope": "markdown",
+    "prefix": ["note", "alert"],
+    "body": [
+      "> ℹ️ Note",
+      ">",
+      "> ${0:Information the user should notice even if skimming.}"
+    ],
+    "description": "Information the user should notice even if skimming."
+  },
+  "Tip alert": {
+    "scope": "markdown",
+    "prefix": ["tip", "alert"],
+    "body": ["> 💡 Tip", ">", "> ${0:Alert for helpful tips in markdown}"],
+    "description": "Alert for helpful tips in markdown"
+  },
+  "Important alert": {
+    "scope": "markdown",
+    "prefix": ["important", "alert"],
+    "body": [
+      "> ❗ Important",
+      ">",
+      "> ${0:Essential information required for user success.}"
+    ],
+    "description": "Essential information required for user success."
+  },
+  "Caution alert": {
+    "scope": "markdown",
+    "prefix": ["caution", "alert"],
+    "body": [
+      "> ⛔ Caution",
+      ">",
+      "> ${0:Negative potential consequences of an action.}"
+    ],
+    "description": "Negative potential consequences of an action."
+  },
+  "Warning alert": {
+    "scope": "markdown",
+    "prefix": ["warning", "alert"],
+    "body": [
+      "> ️⚠️ Warning",
+      ">",
+      "> ${0:Dangerous certain consequences of an action.}"
+    ],
+    "description": "Dangerous certain consequences of an action."
+  }
+}

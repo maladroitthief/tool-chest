@@ -1,0 +1,8 @@
+{
+  "Page Break": {
+    "scope": "markdown",
+    "description": "Pagebreak snippet",
+    "prefix": ["page break"],
+    "body": ["<div class=\"page\"/>"]
+  }
+}

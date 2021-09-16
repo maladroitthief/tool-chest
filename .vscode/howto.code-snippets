@@ -1,0 +1,26 @@
+{
+  "How-to": {
+    "scope": "markdown",
+    "description": "Template for documenting a process on how to accomplish a task",
+    "prefix": ["how-to", "document"],
+    "body": [
+      "---",
+      "title: $1",
+      "description: $2",
+      "author: $3",
+      "date: $4",
+      "---",
+      "",
+      "# $5",
+      "",
+      "> Applies to ",
+      "",
+      "You can use this procedure to ",
+      "",
+      "## Before you begin",
+      "",
+      "## First task",
+      ""
+    ]
+  }
+}
