@@ -1,0 +1,14 @@
+---
+- name: Add kubectl apt repository key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+
+- name: Add kubectl apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+    filename: kubectl
+
+- name: Install kubectl
+  ansible.builtin.apt:
+    name: kubectl
