@@ -1,0 +1,21 @@
+---
+- name: Ensure .bashrc.d/ exists
+  ansible.builtin.file:
+    path: /home/vagrant/.bashrc.d
+    state: directory
+
+- name: Ensure directory .bashrc.d/ is sourced from the .bashrc
+  ansible.builtin.blockinfile:
+    path: /home/vagrant/.bashrc
+    block: |
+      while read filename
+      do
+        source "$filename"
+      done < <(find -L ~/.bashrc.d -type f)
+    create: yes
+
+- name: Create bashrc exports
+  ansible.builtin.copy:
+    content: "{{ item.value }}"
+    dest: /home/vagrant/.bashrc.d/{{ item.key }}
+  loop: "{{ bashrc_exports | dict2items }}"
