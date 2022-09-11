@@ -1,0 +1,22 @@
+---
+- name: Minikube Playbook
+  hosts: all
+  become: true
+
+  vars:
+    bashrc_exports:
+      kubectl_completion: source <(kubectl completion bash)
+
+  tasks:
+    - name: Install docker
+      ansible.builtin.include_tasks: tasks/docker.yml
+
+    - name: Install minikube
+      ansible.builtin.apt:
+        deb: https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+
+    - name: Install kubectl
+      ansible.builtin.include_tasks: tasks/kubectl.yml
+
+    - name: Setup bashrc
+      ansible.builtin.include_tasks: tasks/bashrc.yml
